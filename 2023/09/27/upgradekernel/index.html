@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>为CentOS7.X升级内核 | oGnoK</title>
+
+
+    <meta name="keywords" content="Linux, CentOS, Kernel">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="CentOS 7.X默认自带的的内核版本为3.X，将原默认内核进行替换提高 更新yum源仓库1yum  update -y  配置ELRepo Project官方的安装说明 导入ELRepo public key1rpm --import https:&#x2F;&#x2F;www.elrepo.org&#x2F;RPM-GPG-KEY-elrepo.org  安装ELRepo仓库的yum源1rpm -Uvh http:&#x2F;&#x2F;w">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为CentOS7.X升级内核">
+<meta property="og:url" content="http://lovelypanda.top/2023/09/27/upgradekernel/index.html">
+<meta property="og:site_name" content="oGnoK">
+<meta property="og:description" content="CentOS 7.X默认自带的的内核版本为3.X，将原默认内核进行替换提高 更新yum源仓库1yum  update -y  配置ELRepo Project官方的安装说明 导入ELRepo public key1rpm --import https:&#x2F;&#x2F;www.elrepo.org&#x2F;RPM-GPG-KEY-elrepo.org  安装ELRepo仓库的yum源1rpm -Uvh http:&#x2F;&#x2F;w">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://lovelypanda.top/2023/09/27/upgradekernel/keyongheihe1.png">
+<meta property="og:image" content="http://lovelypanda.top/2023/09/27/upgradekernel/anzhuangneihe.png">
+<meta property="og:image" content="http://lovelypanda.top/2023/09/27/upgradekernel/keyongneihe2.png">
+<meta property="article:published_time" content="2023-09-27T00:45:38.000Z">
+<meta property="article:modified_time" content="2023-09-27T01:54:58.331Z">
+<meta property="article:author" content="oGnoK">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="CentOS">
+<meta property="article:tag" content="Kernel">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://lovelypanda.top/2023/09/27/upgradekernel/keyongheihe1.png">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">oGnoK</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">Home</a>
+                
+                    <a href="/tags/" class="navbar-menu button">Tags</a>
+                
+                    <a href="/archives/" class="navbar-menu button">Archives</a>
+                
+                    <a href="/friends/" class="navbar-menu button">Links</a>
+                
+                    <a href="/page/" class="navbar-menu button">Page</a>
+                
+            </div>
+        
+        
+        
+    <a href="/search/" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="32"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z"></path></svg>
+    </a>
+
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">Home</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">Tags</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">Archives</a>
+                
+                    <a href="/friends/" class="dropdown-menu button">Links</a>
+                
+                    <a href="/page/" class="dropdown-menu button">Page</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        为CentOS7.X升级内核
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2023/09/" class="post-meta__date button">2023-09-27 08:45</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0yum%E6%BA%90%E4%BB%93%E5%BA%93"><span class="toc-text">更新yum源仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEELRepo-Project"><span class="toc-text">配置ELRepo Project</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5ELRepo-public-key"><span class="toc-text">导入ELRepo public key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85ELRepo%E4%BB%93%E5%BA%93%E7%9A%84yum%E6%BA%90"><span class="toc-text">安装ELRepo仓库的yum源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%8F%AF%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8%E5%8C%85"><span class="toc-text">查看可用的系统内核包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC%E5%86%85%E6%A0%B8"><span class="toc-text">安装最新版本内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E5%86%85%E6%A0%B8"><span class="toc-text">查看已安装的内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E5%8F%AF%E7%94%A8%E5%86%85%E6%A0%B8"><span class="toc-text">查看系统可用内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E6%96%B0%E5%86%85%E6%A0%B8%E4%B8%BA%E9%BB%98%E8%AE%A4%E5%86%85%E6%A0%B8"><span class="toc-text">设置新内核为默认内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E5%90%AF%E5%B9%B6%E9%AA%8C%E8%AF%81"><span class="toc-text">重启并验证</span></a></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">Article Directory</div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0yum%E6%BA%90%E4%BB%93%E5%BA%93"><span class="toc-text">更新yum源仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEELRepo-Project"><span class="toc-text">配置ELRepo Project</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5ELRepo-public-key"><span class="toc-text">导入ELRepo public key</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85ELRepo%E4%BB%93%E5%BA%93%E7%9A%84yum%E6%BA%90"><span class="toc-text">安装ELRepo仓库的yum源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%8F%AF%E7%94%A8%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%86%85%E6%A0%B8%E5%8C%85"><span class="toc-text">查看可用的系统内核包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC%E5%86%85%E6%A0%B8"><span class="toc-text">安装最新版本内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E5%86%85%E6%A0%B8"><span class="toc-text">查看已安装的内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E5%8F%AF%E7%94%A8%E5%86%85%E6%A0%B8"><span class="toc-text">查看系统可用内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E6%96%B0%E5%86%85%E6%A0%B8%E4%B8%BA%E9%BB%98%E8%AE%A4%E5%86%85%E6%A0%B8"><span class="toc-text">设置新内核为默认内核</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E5%90%AF%E5%B9%B6%E9%AA%8C%E8%AF%81"><span class="toc-text">重启并验证</span></a></li></ol>
+    </div>
+
+
+<article class="post post__with-toc content-card">
+    <div class="post__header">
+    <div class="post__expire" id="post-expired-notify">
+        <p>
+            This article was last updated on &lt;span id=&#34;expire-date&#34;&gt;&lt;/span&gt; days ago, the information described in the article may be outdated.
+        </p>
+    </div>
+    <script>
+        (() => {
+            var update = Date.parse("2023-09-27"),
+                date = new Date(),
+                now = date.getTime(),
+                expire = now - update,
+                expire_days = Math.floor(expire/(24*3600*1000));
+            if (expire_days >= 360) {
+                document.querySelectorAll('#expire-date')[0].innerHTML = expire_days;
+                document.querySelectorAll('#post-expired-notify')[0].style.display = 'block';
+            }
+        })();
+    </script>
+</div>
+    <div class="post__content">
+        <p>CentOS 7.X默认自带的的内核版本为3.X，将原默认内核进行替换提高</p>
+<h2 id="更新yum源仓库"><a href="#更新yum源仓库" class="headerlink" title="更新yum源仓库"></a>更新yum源仓库</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum  update -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置ELRepo-Project"><a href="#配置ELRepo-Project" class="headerlink" title="配置ELRepo Project"></a>配置ELRepo Project</h2><p><a target="_blank" rel="noopener" href="https://elrepo.org/tiki/tiki-index.php" title="ELRepo 官方说明">官方的安装说明</a></p>
+<h3 id="导入ELRepo-public-key"><a href="#导入ELRepo-public-key" class="headerlink" title="导入ELRepo public key"></a>导入ELRepo public key</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装ELRepo仓库的yum源"><a href="#安装ELRepo仓库的yum源" class="headerlink" title="安装ELRepo仓库的yum源"></a>安装ELRepo仓库的yum源</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看可用的系统内核包"><a href="#查看可用的系统内核包" class="headerlink" title="查看可用的系统内核包"></a>查看可用的系统内核包</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum --disablerepo=&quot;*&quot; --enablerepo=&quot;elrepo-kernel&quot; list available</span><br></pre></td></tr></table></figure>
+
+<img src="/2023/09/27/upgradekernel/keyongheihe1.png" class="lazy" data-srcset="/2023/09/27/upgradekernel/keyongheihe1.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAABlBMVEXMzMyWlpYU2uzLAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNgAAAAAgAB9HFkpgAAAABJRU5ErkJggg==" class="" title="anzhuangneihe">
+
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>Kernel ml VS Kernel lt</div><div class="blockquote-note__content"><p>ELRepo 中有 2 个内核。一个称为 kernel-lt，另一个称为 kernel-ml。这两者之间的区别是，kernel-lt 软件包提供最新 Linux 内核的长期支持版本，而 kernel-ml 软件包提供最新 Linux 内核的主线稳定版本。 kernel-ml 提供的内核比 kernel-lt 更新更多。这两个内核都是安全的。</p>
+</div></blockquote>
+
+<h2 id="安装最新版本内核"><a href="#安装最新版本内核" class="headerlink" title="安装最新版本内核"></a>安装最新版本内核</h2><p>安装最新lt版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum --enablerepo=elrepo-kernel install kernel-lt -y</span><br></pre></td></tr></table></figure>
+
+<p>安装最新ml版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum --enablerepo=elrepo-kernel install kernel-ml -y</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看已安装的内核"><a href="#查看已安装的内核" class="headerlink" title="查看已安装的内核"></a>查看已安装的内核</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -qa|grep kernel</span><br></pre></td></tr></table></figure>
+
+<img src="/2023/09/27/upgradekernel/anzhuangneihe.png" class="lazy" data-srcset="/2023/09/27/upgradekernel/anzhuangneihe.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAABlBMVEXMzMyWlpYU2uzLAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNgAAAAAgAB9HFkpgAAAABJRU5ErkJggg==" class="" title="anzhuangneihe">
+
+<h2 id="查看系统可用内核"><a href="#查看系统可用内核" class="headerlink" title="查看系统可用内核"></a>查看系统可用内核</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk -F\&#x27; &#x27;$1==&quot;menuentry &quot; &#123;print $2&#125;&#x27; /etc/grub2.cfg</span><br></pre></td></tr></table></figure>
+
+<img src="/2023/09/27/upgradekernel/keyongneihe2.png" class="lazy" data-srcset="/2023/09/27/upgradekernel/keyongneihe2.png" srcset="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAABlBMVEXMzMyWlpYU2uzLAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNgAAAAAgAB9HFkpgAAAABJRU5ErkJggg==" class="" title="keyongneihe">
+
+<h2 id="设置新内核为默认内核"><a href="#设置新内核为默认内核" class="headerlink" title="设置新内核为默认内核"></a>设置新内核为默认内核</h2><p>从上往下是0开始数，应用第0位可用内核</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grub2-set-default 0</span><br></pre></td></tr></table></figure>
+
+<h2 id="重启并验证"><a href="#重启并验证" class="headerlink" title="重启并验证"></a>重启并验证</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uname -r</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>Author: </strong>
+        </p>
+        <p>
+            <strong>
+                Permalink: 
+            </strong>
+            <a href="http://lovelypanda.top/2023/09/27/upgradekernel/">http://lovelypanda.top/2023/09/27/upgradekernel/</a>
+        </p>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>updated at 2023-09-27 09:54</p></div> 
+    <div class="post-entry__tags"><a href="/tags/Linux/" class="post-tags__link button"># Linux</a><a href="/tags/CentOS/" class="post-tags__link button"># CentOS</a><a href="/tags/Kernel/" class="post-tags__link button"># Kernel</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2023/09/24/mysql/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            本地安装Mysql服务8.0
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+     
+    <a href="#" class="button" id="b2t" aria-label="Back to Top" title="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2018&nbsp;-&nbsp;2023 <a href="/">oGnoK</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.css">
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.js"></script>
+
+    <script>
+        let lazyloadT = Boolean('true'),
+            auto_fancybox = Boolean('false')
+        if (auto_fancybox) {
+            $(".post__content").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        } else {
+            $(".post__content").find("fancybox").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
