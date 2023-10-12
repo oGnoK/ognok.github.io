@@ -365,7 +365,7 @@
     <script>
         function loadComment() {
             let e, i;
-            (e = document.createElement("script")).src = 'https://imsun.github.io/gitment/dist/gitment.browser.js',
+            (e = document.createElement("script")).src = 'https://billts.site/js/gitment.js,
             document.body.appendChild(e);
             e.onload = () => {
                 var gitment = new Gitment({
@@ -380,7 +380,7 @@
                 gitment.render('gitment-container')
             };
             (i = document.createElement("link")).rel = "stylesheet",
-            i.href = 'https://imsun.github.io/gitment/style/default.css',
+            i.href = 'https://billts.site/extra_css/gitment.css',
             document.head.appendChild(i);
         }
     
