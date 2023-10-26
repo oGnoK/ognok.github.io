@@ -218,7 +218,7 @@
     
     <div class="post__license">
         <p>
-            <strong>Author: </strong>
+            <strong>Author: </strong>oGnok
         </p>
         <p>
             <strong>
@@ -272,27 +272,6 @@
     </div>
 
 
-
-    <div class="post__comments post__with-toc content-card" id="comment">
-        
-    <h4>Comments</h4>
-    
-    
-    
-    
-    
-    
-    
-    <div id="gitment-container"></div>
-
-    
-    
-    
-    
-    
-
-
-    </div>
 
 
 
@@ -400,70 +379,6 @@
 
  
 
-
-    
-
-    
-
-    
-    
-
-    
-    
-    
-    
-    
-    <script>
-        function loadComment() {
-            let e, i;
-            (e = document.createElement("script")).src = 'https://imsun.github.io/gitment/dist/gitment.browser.js',
-            document.body.appendChild(e);
-            e.onload = () => {
-                var gitment = new Gitment({
-                    id: window.location.pathname,
-                    owner: 'oGnoK',
-                    repo: 'ognok.github.io',
-                    oauth: {
-                        client_id: '1bab8a3516ee0ead04d4',
-                        client_secret: 'cec0f45a6a95eca3fc44936232e959ed55b4ad7a',
-                    },
-                })
-                gitment.render('gitment-container')
-            };
-            (i = document.createElement("link")).rel = "stylesheet",
-            i.href = 'https://imsun.github.io/gitment/style/default.css',
-            document.head.appendChild(i);
-        }
-    
-        var runningOnBrowser = typeof window !== "undefined";
-        var isBot = runningOnBrowser && !("onscroll" in window) || typeof navigator !== "undefined" && /(gle|ing|ro|msn)bot|crawl|spider|yand|duckgo/i.test(navigator.userAgent);
-        var supportsIntersectionObserver = runningOnBrowser && "IntersectionObserver" in window;
-    
-        setTimeout(function () {
-            if (!isBot && supportsIntersectionObserver) {
-                var comment_observer = new IntersectionObserver(function(entries) {
-                    if (entries[0].isIntersecting) {
-                        loadComment();
-                        comment_observer.disconnect();
-                    }
-                }, { threshold: [0] });
-                comment_observer.observe(document.getElementById('comment'));
-            } else {
-                loadComment();
-            }
-        }, 1);
-    </script>
-
-
-    
-    
-    
-    
-    
-
-    
-    
-    
 
 
 
