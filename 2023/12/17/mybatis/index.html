@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>持久化框架--Mybatis的xml中到底有什么？ | oGnoK</title>
+
+
+    <meta name="keywords" content="Java, Mybatis">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="MyBatis 是一款优秀的持久层框架，它支持自定义 SQL、存储过程以及高级映射。MyBatis 免除了几乎所有的 JDBC 代码以及设置参数和获取结果集的工作。MyBatis 可以通过简单的 XML 或注解来配置和映射原始类型、接口和 Java POJO（Plain Old Java Objects，普通老式 Java 对象）为数据库中的记录。 在SpringBoot框架的基础之上导入相关启动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="持久化框架--Mybatis的xml中到底有什么？">
+<meta property="og:url" content="http://lovelypanda.top/2023/12/17/mybatis/index.html">
+<meta property="og:site_name" content="oGnoK">
+<meta property="og:description" content="MyBatis 是一款优秀的持久层框架，它支持自定义 SQL、存储过程以及高级映射。MyBatis 免除了几乎所有的 JDBC 代码以及设置参数和获取结果集的工作。MyBatis 可以通过简单的 XML 或注解来配置和映射原始类型、接口和 Java POJO（Plain Old Java Objects，普通老式 Java 对象）为数据库中的记录。 在SpringBoot框架的基础之上导入相关启动">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-12-17T06:59:02.000Z">
+<meta property="article:modified_time" content="2023-12-23T06:49:29.521Z">
+<meta property="article:author" content="oGnoK">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Mybatis">
+<meta name="twitter:card" content="summary_large_image">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">oGnoK</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">Home</a>
+                
+                    <a href="/tags/" class="navbar-menu button">Tags</a>
+                
+                    <a href="/archives/" class="navbar-menu button">Archives</a>
+                
+                    <a href="/friends/" class="navbar-menu button">Links</a>
+                
+                    <a href="/page/" class="navbar-menu button">Page</a>
+                
+            </div>
+        
+        
+        
+    <a href="/search/" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="32"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z"></path></svg>
+    </a>
+
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">Home</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">Tags</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">Archives</a>
+                
+                    <a href="/friends/" class="dropdown-menu button">Links</a>
+                
+                    <a href="/page/" class="dropdown-menu button">Page</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        持久化框架--Mybatis的xml中到底有什么？
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2023/12/" class="post-meta__date button">2023-12-17 14:59</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8SpringBoot%E6%A1%86%E6%9E%B6%E7%9A%84%E5%9F%BA%E7%A1%80%E4%B9%8B%E4%B8%8A%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E5%90%AF%E5%8A%A8%E5%99%A8%E4%BE%9D%E8%B5%96"><span class="toc-text">在SpringBoot框架的基础之上导入相关启动器依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8-application-yml%E4%B8%AD%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9C%B0%E5%9D%80%E6%B1%A0%E4%B8%8EMybatis"><span class="toc-text">在 application.yml中简单配置数据库地址池与Mybatis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%AE%9E%E4%BD%93%E7%B1%BB"><span class="toc-text">创建实体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mapper%E6%8E%A5%E5%8F%A3%E5%88%9B%E5%BB%BA"><span class="toc-text">mapper接口创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8resources%E4%B8%8B%E5%88%9B%E5%BB%BAMapper-StudentMapper-xml%E6%96%87%E4%BB%B6"><span class="toc-text">在resources下创建Mapper.StudentMapper.xml文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5Mybatis%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="toc-text">导入Mybatis头文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B9%A6%E5%86%99%E6%A0%87%E7%AD%BE%EF%BC%8Cnamespace%E7%94%A8%E4%BA%8E%E7%BB%91%E5%AE%9AMapper%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-text">书写标签，namespace用于绑定Mapper的接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%9F%BA%E6%9C%AC%E7%9A%84sql%E6%93%8D%E4%BD%9C"><span class="toc-text">添加基本的sql操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%AF%B9%E4%B8%80%E6%98%A0%E5%B0%84"><span class="toc-text">一对一映射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%AF%B9%E5%A4%9A%E6%98%A0%E5%B0%84"><span class="toc-text">一对多映射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E6%8B%BC%E6%8E%A5%E4%B8%8E%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%A0%87%E7%AD%BE"><span class="toc-text">动态拼接与格式化标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%87%E7%AD%BE%E8%A1%A5%E5%85%85"><span class="toc-text">标签补充</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-text">结语</span></a></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">Article Directory</div>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-text"></span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8SpringBoot%E6%A1%86%E6%9E%B6%E7%9A%84%E5%9F%BA%E7%A1%80%E4%B9%8B%E4%B8%8A%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E5%90%AF%E5%8A%A8%E5%99%A8%E4%BE%9D%E8%B5%96"><span class="toc-text">在SpringBoot框架的基础之上导入相关启动器依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8-application-yml%E4%B8%AD%E7%AE%80%E5%8D%95%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9C%B0%E5%9D%80%E6%B1%A0%E4%B8%8EMybatis"><span class="toc-text">在 application.yml中简单配置数据库地址池与Mybatis</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%AE%9E%E4%BD%93%E7%B1%BB"><span class="toc-text">创建实体类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mapper%E6%8E%A5%E5%8F%A3%E5%88%9B%E5%BB%BA"><span class="toc-text">mapper接口创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8resources%E4%B8%8B%E5%88%9B%E5%BB%BAMapper-StudentMapper-xml%E6%96%87%E4%BB%B6"><span class="toc-text">在resources下创建Mapper.StudentMapper.xml文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%BC%E5%85%A5Mybatis%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="toc-text">导入Mybatis头文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B9%A6%E5%86%99%E6%A0%87%E7%AD%BE%EF%BC%8Cnamespace%E7%94%A8%E4%BA%8E%E7%BB%91%E5%AE%9AMapper%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-text">书写标签，namespace用于绑定Mapper的接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%9F%BA%E6%9C%AC%E7%9A%84sql%E6%93%8D%E4%BD%9C"><span class="toc-text">添加基本的sql操作</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%AF%B9%E4%B8%80%E6%98%A0%E5%B0%84"><span class="toc-text">一对一映射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E5%AF%B9%E5%A4%9A%E6%98%A0%E5%B0%84"><span class="toc-text">一对多映射</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E6%8B%BC%E6%8E%A5%E4%B8%8E%E6%A0%BC%E5%BC%8F%E5%8C%96%E6%A0%87%E7%AD%BE"><span class="toc-text">动态拼接与格式化标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%87%E7%AD%BE%E8%A1%A5%E5%85%85"><span class="toc-text">标签补充</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-text">结语</span></a></li></ol>
+    </div>
+
+
+<article class="post post__with-toc content-card">
+    <div class="post__header">
+    <div class="post__expire" id="post-expired-notify">
+        <p>
+            This article was last updated on &lt;span id=&#34;expire-date&#34;&gt;&lt;/span&gt; days ago, the information described in the article may be outdated.
+        </p>
+    </div>
+    <script>
+        (() => {
+            var update = Date.parse("2023-12-23"),
+                date = new Date(),
+                now = date.getTime(),
+                expire = now - update,
+                expire_days = Math.floor(expire/(24*3600*1000));
+            if (expire_days >= 360) {
+                document.querySelectorAll('#expire-date')[0].innerHTML = expire_days;
+                document.querySelectorAll('#post-expired-notify')[0].style.display = 'block';
+            }
+        })();
+    </script>
+</div>
+    <div class="post__content">
+        <p>MyBatis 是一款优秀的持久层框架，它支持自定义 SQL、存储过程以及高级映射。MyBatis 免除了几乎所有的 JDBC 代码以及设置参数和获取结果集的工作。MyBatis 可以通过简单的 XML 或注解来配置和映射原始类型、接口和 Java POJO（Plain Old Java Objects，普通老式 Java 对象）为数据库中的记录。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3><h3 id="在SpringBoot框架的基础之上导入相关启动器依赖"><a href="#在SpringBoot框架的基础之上导入相关启动器依赖" class="headerlink" title="在SpringBoot框架的基础之上导入相关启动器依赖"></a>在SpringBoot框架的基础之上导入相关启动器依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-j<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>        </span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.0.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="在-application-yml中简单配置数据库地址池与Mybatis"><a href="#在-application-yml中简单配置数据库地址池与Mybatis" class="headerlink" title="在 application.yml中简单配置数据库地址池与Mybatis"></a>在 application.yml中简单配置数据库地址池与Mybatis</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  datasource:</span><br><span class="line">    url: jdbc:mysql://localhost:3306/mysql?useUnicode=true&amp;characterEncoding=utf-8</span><br><span class="line">    username: root</span><br><span class="line">    password: root</span><br><span class="line"></span><br><span class="line"># MyBatis</span><br><span class="line">mybatis:</span><br><span class="line">  # 实体类包路径</span><br><span class="line">  typeAliasesPackage: com.example.**.entity</span><br><span class="line">  # mapper.xml 文件地址</span><br><span class="line">  mapperLocations: classpath*:mapper/**/*Mapper.xml</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建实体类"><a href="#创建实体类" class="headerlink" title="创建实体类"></a>创建实体类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String age;</span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line">    <span class="comment">//    省略set与get方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="mapper接口创建"><a href="#mapper接口创建" class="headerlink" title="mapper接口创建"></a>mapper接口创建</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">StudentMapper</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">insertName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">deleteinfo</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">updateName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">selectName</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="在resources下创建Mapper-StudentMapper-xml文件"><a href="#在resources下创建Mapper-StudentMapper-xml文件" class="headerlink" title="在resources下创建Mapper.StudentMapper.xml文件"></a>在resources下创建Mapper.StudentMapper.xml文件</h3><h4 id="导入Mybatis头文件"><a href="#导入Mybatis头文件" class="headerlink" title="导入Mybatis头文件"></a>导入Mybatis头文件</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span></span></span><br><span class="line"><span class="meta"><span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta"><span class="string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="书写标签，namespace用于绑定Mapper的接口"><a href="#书写标签，namespace用于绑定Mapper的接口" class="headerlink" title="书写标签，namespace用于绑定Mapper的接口"></a>书写<mapper>标签，namespace用于绑定Mapper的接口</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.example.demo.Mapper.StudentMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;Student&quot;</span> <span class="attr">id</span>=<span class="string">&quot;resultMapId&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>    <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>    /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span>    <span class="attr">column</span>=<span class="string">&quot;name&quot;</span>    /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span>    <span class="attr">column</span>=<span class="string">&quot;age&quot;</span>    /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;address&quot;</span>    <span class="attr">column</span>=<span class="string">&quot;address&quot;</span>    /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>结果映射将结果映射给Java对象</p>
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>标签详细介绍</div><div class="blockquote-note__content"><p>resultMap标签用于定义结果映射规则，将查询结果映射到Java对象。其常用属性如下：</p>
+<ul>
+<li><code>id</code>：标识符，用于在配置文件中引用该结果映射规则。映射数据表的主键ID，</li>
+<li><code>type</code>：指定映射结果的Java类型。</li>
+<li><code>result</code>：标识符，用于在配置文件中引用该结果映射规则。注入到字段或 JavaBean 属性的结果</li>
+<li><code>property</code>：column 指定的列进行映射的 JavaBean 变量名称。（Java实体类字段名）</li>
+<li><code>column</code>：用来指定我们需要将那一列进行和 JavaBean 属性映射。(数据库字段名)</li>
+</ul>
+</div></blockquote>
+
+<h4 id="添加基本的sql操作"><a href="#添加基本的sql操作" class="headerlink" title="添加基本的sql操作"></a>添加基本的sql操作</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.example.demo.Mapper.StudentMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;Student&quot;</span> <span class="attr">id</span>=<span class="string">&quot;resultMapId&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_name&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_age&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;address&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_address&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertName&quot;</span>&gt;</span></span><br><span class="line">        INSERT INTO student (student_name,student_age,student_address) VALUES (#&#123;name&#125;, #&#123;age&#125;, #&#123;address&#125;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateName&quot;</span>&gt;</span></span><br><span class="line">        UPDATE student SET student_name = #&#123;name&#125;, student_age = #&#123;age&#125; WHERE student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deleteinfo&quot;</span>&gt;</span></span><br><span class="line">        DELETE FROM student WHERE student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectName&quot;</span>  <span class="attr">resultType</span>=<span class="string">&quot;com.example.demo.entity.Student&quot;</span>&gt;</span></span><br><span class="line">        SELECT * FROM student WHERE student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>标签详细介绍</div><div class="blockquote-note__content"><ul>
+<li><code>&lt;select&gt;</code>：插入操作的标签</li>
+<li><code>&lt;update&gt;</code>：更新操作的标签</li>
+<li><code>&lt;delete&gt;</code>：删除操作的标签</li>
+<li><code>&lt;select&gt;</code>：查询操作的标签</li>
+<li><code>id</code>：与Mapper方法名对应，使用此id调用SQL语句</li>
+<li><code>resultType</code>：指定 SQL 语句执行后返回的结果类型，Java对象或者基本数据类型</li>
+<li><code>parameterType</code>：删除操作的标签</li>
+</ul>
+</div></blockquote>
+
+<blockquote class="blockquote-note blockquote-note__important"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M7 2.3c3.14 0 5.7 2.56 5.7 5.7s-2.56 5.7-5.7 5.7A5.71 5.71 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zM7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm1 3H6v5h2V4zm0 6H6v2h2v-2z"></path></svg></div>#{}与${}的区别</div><div class="blockquote-note__content"><ul>
+<li><code>#{}</code>：占位符， 可以防止 SQL 注入攻击，并且会自动进行参数类型转换和字符转义，相对安全。<code>#{}</code> 在执行前会被预编译成一个占位符，MyBatis 会将 SQL 语句中的 <code>#{}</code> 部分替换为问号（<code>?</code>）,然后将参数值通过 PreparedStatement （ Java 中用于执行预编译 SQL 语句的接口，它可以确保参数值被安全地传递给数据库，并且不会受到恶意输入的影响）的方式绑定到这些问号上。它可以确保参数值被安全地传递给数据库，因此可以防止 SQL 注入。</li>
+<li><code>${}</code>：字符串替换，在 SQL 语句中使用 <code>${}</code> 会直接将参数的值拼接到 SQL 语句中，存在 SQL 注入的风险。</li>
+</ul>
+</div></blockquote>
+
+<h4 id="一对一映射"><a href="#一对一映射" class="headerlink" title="一对一映射"></a>一对一映射</h4><p><strong>一实体对应一实体相关联。</strong></p>
+<p>改动下原来的实体类，并添加子映射实体类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String age;</span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line">    <span class="keyword">private</span> IdCard idCard; <span class="comment">//</span></span><br><span class="line">    <span class="comment">//    省略set与get方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IdCard</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer idCardId;</span><br><span class="line">    <span class="keyword">private</span> String idCardNumber;</span><br><span class="line">    <span class="comment">//    省略set与get方法</span></span><br><span class="line">&#125;    </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">StudentMapper</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">insertName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">deleteinfo</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">updateName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">selectName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">StudentWithIdCard</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建新的Mapper接口</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.example.demo.Mapper.StudentMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;Student&quot;</span> <span class="attr">id</span>=<span class="string">&quot;resultMapIdOne&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Student映射 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_name&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_age&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;address&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_address&quot;</span>/&gt;</span></span><br><span class="line">       </span><br><span class="line">        <span class="comment">&lt;!-- 一对一关联映射 身份证 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;idCard&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;IdCard&quot;</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- idCard字段映射 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;idCardId&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id_card_id&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;idCardNumber&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id_card_number&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertName&quot;</span>&gt;</span></span><br><span class="line">        INSERT INTO student (student_name,student_age,student_address) VALUES (#&#123;name&#125;, #&#123;age&#125;, #&#123;address&#125;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateName&quot;</span>&gt;</span></span><br><span class="line">        UPDATE student SET student_name = #&#123;name&#125;, student_age = #&#123;age&#125; WHERE student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deleteinfo&quot;</span>&gt;</span></span><br><span class="line">        DELETE FROM student WHERE student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectName&quot;</span>  <span class="attr">resultType</span>=<span class="string">&quot;com.example.demo.entity.Student&quot;</span>&gt;</span></span><br><span class="line">        SELECT * FROM student WHERE student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- 查询学生及其身份证信息  resultMap对应&lt;resultMap&gt;标签id，处理复杂的映射规则 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;StudentWithIdCard&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;resultMapIdOne&quot;</span>&gt;</span></span><br><span class="line">        SELECT</span><br><span class="line">            s.student_id, </span><br><span class="line">        	s.student_name,</span><br><span class="line">        	s.student_age,</span><br><span class="line">        	s.student_address,</span><br><span class="line">            i.id_card_id,</span><br><span class="line">        	i.id_card_number</span><br><span class="line">        FROM student s</span><br><span class="line">        LEFT JOIN id_card i ON s.id_card_id = i.id_card_id</span><br><span class="line">        WHERE s.student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用LEFT JOIN将student与id_card表进行关联，使用字段id将其关联，将select标签内查询出来的数据通过resultMap处理映射，使用resultMap进行指定。</p>
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>Tip</div><div class="blockquote-note__content"><p><strong>查询到的数据会映射到相应的实体类，此时，Student中除原本属性外idCard中的数据将Set到IdCard对象中，”一对象“对应另一个对象中的”其中一组数据</strong></p>
+</div></blockquote>
+
+<h4 id="一对多映射"><a href="#一对多映射" class="headerlink" title="一对多映射"></a>一对多映射</h4><p><strong>一实体对应一实体多条数据，甚至多个实体多条记录</strong></p>
+<p>改动原实体类</p>
+<p><strong>Student中添加了LIst&lt;&gt;属性，它代表学生与学生证、学生与教师与之间的一对多关系。</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Student</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String age;</span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line">    <span class="keyword">private</span> List&lt;IdCard&gt; idCardList;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Teacher&gt; teacherList;</span><br><span class="line">    <span class="comment">//    省略 getter 和 setter 方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IdCard</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer idCardId;</span><br><span class="line">    <span class="keyword">private</span> String idCardNumber;</span><br><span class="line">    <span class="comment">//    省略 getter 和 setter 方法</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>添加新的实体类Teacher</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Teacher</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> Integer teacherId;</span><br><span class="line">    <span class="keyword">private</span> String teacherName;</span><br><span class="line">    <span class="comment">//    省略 getter 和 setter 方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">StudentMapper</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">insertName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">deleteinfo</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">updateName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">selectName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">StudentWithIdCard</span><span class="params">()</span>;</span><br><span class="line">    <span class="comment">// 查询所有学生及其相关信息（包括学生证和教师）</span></span><br><span class="line">    List&lt;Student&gt; <span class="title function_">StudentsWithDetailsAll</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.example.demo.Mapper.StudentMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;Student&quot;</span> <span class="attr">id</span>=<span class="string">&quot;resultMapIdTwo&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_name&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_age&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;address&quot;</span> <span class="attr">column</span>=<span class="string">&quot;student_address&quot;</span>/&gt;</span></span><br><span class="line">        </span><br><span class="line">         <span class="comment">&lt;!-- 一对多映射，身份证 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;idCardList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;IdCard&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;idCardId&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id_card_id&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;idCardNumber&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id_card_number&quot;</span>/&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 其他属性映射 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- 一对多关联映射，教师 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;teacherList&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;Teacher&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;teacherId&quot;</span> <span class="attr">column</span>=<span class="string">&quot;teacher_id&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;teacherName&quot;</span> <span class="attr">column</span>=<span class="string">&quot;teacher_name&quot;</span>/&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 其他属性映射 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span> </span><br><span class="line">    </span><br><span class="line">      <span class="comment">&lt;!-- 查询所有学生及其相关信息（包括身份证和教师） 映射到resultMapIdTwo --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;StudentsWithDetailsAll&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;resultMapIdTwo&quot;</span>&gt;</span></span><br><span class="line">        SELECT </span><br><span class="line">            s.student_id,</span><br><span class="line">            s.student_name,</span><br><span class="line">        	s.student_age</span><br><span class="line">        	s.student_address,</span><br><span class="line">            i.id_card_id,</span><br><span class="line">            i.id_card_number,</span><br><span class="line">            t.teacher_id,</span><br><span class="line">            t.teacher_name</span><br><span class="line">        FROM student s</span><br><span class="line">        LEFT JOIN id_card i ON s.student_id = i.student_id</span><br><span class="line">        LEFT JOIN teacher t ON s.student_id = t.student_id;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用student_id将三张表进行关联，student表映射到Student类，idCard映射到idCardList中，teacher映射到teacherList中，实现一实体对应多个实体的关系</p>
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>association与collection标签</div><div class="blockquote-note__content"><p>注意我分别使用了association与collection它们在两个不同的<resultMap>内对应id分别为resultMapIdOne与resultMapIdTwo</p>
+<p>两个元素都用于处理关联关系</p>
+</div></blockquote>
+
+<h4 id="动态拼接与格式化标签"><a href="#动态拼接与格式化标签" class="headerlink" title="动态拼接与格式化标签"></a>动态拼接与格式化标签</h4><p>在resultMapIdOne映射基础上对基本语句进行调整，添加Mybatis标签使用</p>
+<p>改动mapper接口,改变insertName接收</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">StudentMapper</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">insertName</span><span class="params">(<span class="meta">@Param(&quot;students&quot;)</span> List&lt;Student&gt; students)</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">deleteinfo</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">updateName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">selectName</span><span class="params">()</span>;</span><br><span class="line">    <span class="keyword">public</span> Student <span class="title function_">StudentWithIdCard</span><span class="params">()</span>;</span><br><span class="line">    <span class="comment">// 查询所有学生及其相关信息（包括学生证和教师）</span></span><br><span class="line">    List&lt;Student&gt; <span class="title function_">StudentsWithDetailsAll</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.example.demo.Mapper.StudentMapper&quot;</span>&gt;</span></span><br><span class="line"> 	</span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertName&quot;</span>&gt;</span></span><br><span class="line">        INSERT INTO student (student_name,student_age,student_address) </span><br><span class="line">        VALUES </span><br><span class="line">        <span class="comment">&lt;!-- 实现类似的批量插入功能。 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">&quot;students&quot;</span> <span class="attr">item</span>=<span class="string">&quot;student&quot;</span> <span class="attr">separator</span>=<span class="string">&quot;,&quot;</span>&gt;</span></span><br><span class="line">            (#&#123;student.name&#125;, #&#123;student.age&#125;, #&#123;student.address&#125;)</span><br><span class="line">    	<span class="tag">&lt;/<span class="name">foreach</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateName&quot;</span>&gt;</span></span><br><span class="line">        UPDATE student</span><br><span class="line">        <span class="tag">&lt;<span class="name">set</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;name != null&quot;</span>&gt;</span>student_name = #&#123;name&#125;,<span class="tag">&lt;/<span class="name">if</span>&gt;</span><span class="comment">&lt;!-- 动态判断当属性不为空时，将值拼入Sql --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;age != null&quot;</span>&gt;</span>student_age = #&#123;age&#125;,<span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">set</span>&gt;</span></span><br><span class="line">        WHERE student_id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deleteinfo&quot;</span>&gt;</span></span><br><span class="line">        DELETE FROM student WHERE </span><br><span class="line">         <span class="tag">&lt;<span class="name">choose</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;id != null&quot;</span>&gt;</span><span class="comment">&lt;!-- 所有when条件只会被选择一个，类似Java的switch case --&gt;</span></span><br><span class="line">                student_id = #&#123;id&#125;</span><br><span class="line">            <span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">when</span> <span class="attr">test</span>=<span class="string">&quot;name != null&quot;</span>&gt;</span></span><br><span class="line">                student_name = #&#123;name&#125;</span><br><span class="line">        	<span class="tag">&lt;/<span class="name">when</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">otherwise</span>&gt;</span></span><br><span class="line">                1=1 <span class="comment">&lt;!-- 当所有条件都不满足时执行otherwise --&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">otherwise</span>&gt;</span></span><br><span class="line">    	<span class="tag">&lt;/<span class="name">choose</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectName&quot;</span>  <span class="attr">resultType</span>=<span class="string">&quot;com.example.demo.entity.Student&quot;</span>&gt;</span></span><br><span class="line">        SELECT student_id,student_name,student_age,student_address FROM student</span><br><span class="line">        <span class="tag">&lt;<span class="name">where</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">trim</span> <span class="attr">prefix</span>=<span class="string">&quot;AND&quot;</span> <span class="attr">suffixOverrides</span>=<span class="string">&quot;AND&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;age != null&quot;</span>&gt;</span></span><br><span class="line">                    student_age = #&#123;age&#125; AND</span><br><span class="line">                <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;address != null&quot;</span>&gt;</span></span><br><span class="line">                    student_address = #&#123;address&#125; AND</span><br><span class="line">                <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">trim</span>&gt;</span>    </span><br><span class="line">                <span class="comment">&lt;!-- 根据字段需求可以筛选更多条件 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">where</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>标签详细介绍</div><div class="blockquote-note__content"><ul>
+<li><p><code>if</code>：判断是否要添加相应的语句。</p>
+</li>
+<li><p><code>choose</code>：类似if判断，搭配when与otherwisse使用，当所有when条件都不成立&#x2F;不符合时，使用otherwise，所有when条件只会执行一次</p>
+</li>
+<li><p><code>foreach</code>：动态生成 SQL 语句，用于遍历集合生成Sql片段，</p>
+<p>内部标签结构：</p>
+<ul>
+<li><code>collection</code>: 遍历的集合或数组的名称。对应Mapper传递参数名</li>
+<li><code>item</code>: 集合中的每个元素在循环中的别名。</li>
+<li><code>index</code>（可选）: 当遍历的是 Map 时，表示 Map 的键。</li>
+<li><code>open</code>: 遍历开始时的字符串。</li>
+<li><code>close</code>: 遍历结束时的字符串。</li>
+<li><code>separator</code>: 每个元素之间的分隔符，注意：控制的是在每两个元素之间插入的分隔符。对于最后一个元素，不会在其后添加分隔符。</li>
+</ul>
+</li>
+<li><p><code>where</code>：用于在 SQL 查询中动态生成 <code>WHERE</code> 子句。</p>
+</li>
+<li><p><code>set</code>：用于 <code>UPDATE</code> 语句中，用于动态生成 <code>SET</code> 子句</p>
+</li>
+<li><p><code>trim</code>：定制 SQL 语句的前缀、后缀，以及连接条件。它可以用于处理动态 SQL 语句的前缀和后缀。</p>
+<p>内部标签结构：</p>
+<ul>
+<li><code>prefix</code>：字符串开头添加的前缀。</li>
+<li><code>prefixOverrides</code>：字符串开头删除的前缀。</li>
+<li><code>suffix</code>：字符串结尾添加的后缀。</li>
+<li><code>suffixOverrides</code>：字符串结尾删除的后缀。</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+
+<h4 id="标签补充"><a href="#标签补充" class="headerlink" title="标签补充"></a>标签补充</h4><ul>
+<li><p><code>sql</code>：定义SQL的常量。</p>
+</li>
+<li><p><code>include </code>：用于引用sql标签定义的常量</p>
+<p>以此查询条件为例进行改动</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectName&quot;</span>  <span class="attr">resultType</span>=<span class="string">&quot;com.example.demo.entity.Student&quot;</span>&gt;</span></span><br><span class="line">    SELECT student_id,student_name,student_age,student_address FROM student</span><br><span class="line">    <span class="tag">&lt;<span class="name">where</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">trim</span> <span class="attr">prefix</span>=<span class="string">&quot;AND&quot;</span> <span class="attr">suffixOverrides</span>=<span class="string">&quot;AND&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;age != null&quot;</span>&gt;</span></span><br><span class="line">                student_age = #&#123;age&#125; AND</span><br><span class="line">            <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;address != null&quot;</span>&gt;</span></span><br><span class="line">                student_address = #&#123;address&#125; AND</span><br><span class="line">            <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">trim</span>&gt;</span>    </span><br><span class="line">            <span class="comment">&lt;!-- 根据字段需求可以筛选更多条件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">where</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">sql</span> <span class="attr">id</span>=<span class="string">&quot;sqlIdOne&quot;</span>&gt;</span></span><br><span class="line">	SELECT student_id,student_name,student_age,student_address FROM student</span><br><span class="line"><span class="tag">&lt;/<span class="name">sql</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectName&quot;</span>  <span class="attr">resultType</span>=<span class="string">&quot;com.example.demo.entity.Student&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">include</span> <span class="attr">refid</span>=<span class="string">&quot;sqlIdOne&quot;</span>/&gt;</span>  <span class="comment">&lt;!-- refid引用sql定义的id --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">where</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">trim</span> <span class="attr">prefix</span>=<span class="string">&quot;AND&quot;</span> <span class="attr">suffixOverrides</span>=<span class="string">&quot;AND&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;age != null&quot;</span>&gt;</span></span><br><span class="line">                student_age = #&#123;age&#125; AND</span><br><span class="line">            <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">if</span> <span class="attr">test</span>=<span class="string">&quot;address != null&quot;</span>&gt;</span></span><br><span class="line">                student_address = #&#123;address&#125; AND</span><br><span class="line">            <span class="tag">&lt;/<span class="name">if</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">trim</span>&gt;</span>    </span><br><span class="line">            <span class="comment">&lt;!-- 根据字段需求可以筛选更多条件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">where</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>希望和朋友们一起学习、一起进步</p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>Author: </strong>oGnok
+        </p>
+        <p>
+            <strong>
+                Permalink: 
+            </strong>
+            <a href="http://lovelypanda.top/2023/12/17/mybatis/">http://lovelypanda.top/2023/12/17/mybatis/</a>
+        </p>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>updated at 2023-12-23 14:49</p></div> 
+    <div class="post-entry__tags"><a href="/tags/Java/" class="post-tags__link button"># Java</a><a href="/tags/Mybatis/" class="post-tags__link button"># Mybatis</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2023/10/26/javaregular/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            Java 正则表达式
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+     
+    <a href="#" class="button" id="b2t" aria-label="Back to Top" title="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2018&nbsp;-&nbsp;2023 <a href="/">oGnoK</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.css">
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.js"></script>
+
+    <script>
+        let lazyloadT = Boolean('true'),
+            auto_fancybox = Boolean('false')
+        if (auto_fancybox) {
+            $(".post__content").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        } else {
+            $(".post__content").find("fancybox").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>

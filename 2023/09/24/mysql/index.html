@@ -52,7 +52,7 @@
 <meta property="og:image" content="http://lovelypanda.top/2023/09/24/mysql/quanxian1.png">
 <meta property="og:image" content="http://lovelypanda.top/2023/09/24/mysql/quanxian2.png">
 <meta property="article:published_time" content="2023-09-24T08:21:42.000Z">
-<meta property="article:modified_time" content="2023-09-24T09:11:19.275Z">
+<meta property="article:modified_time" content="2023-11-21T07:18:23.712Z">
 <meta property="article:author" content="oGnoK">
 <meta property="article:tag" content="Mysql">
 <meta name="twitter:card" content="summary_large_image">
@@ -87,7 +87,7 @@
 
     <!-- custom head -->
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 7.0.0"></head>
 
     <body>
         <div id="app" tabindex="-1">
@@ -195,7 +195,7 @@
     </div>
     <script>
         (() => {
-            var update = Date.parse("2023-09-24"),
+            var update = Date.parse("2023-11-21"),
                 date = new Date(),
                 now = date.getTime(),
                 expire = now - update,
@@ -227,9 +227,11 @@
 
 <h3 id="登录Mysql"><a href="#登录Mysql" class="headerlink" title="登录Mysql"></a>登录Mysql</h3><p> mysql -u root -p</p>
 <p>第一次登陆，输入初始化时的密码</p>
-<h3 id="修改用户密码"><a href="#修改用户密码" class="headerlink" title="修改用户密码"></a>修改用户密码</h3><figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;%&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;<span class="number">123456</span>&#x27;;</span><br></pre></td></tr></table></figure>
+<h3 id="修改用户密码"><a href="#修改用户密码" class="headerlink" title="修改用户密码"></a>修改用户密码</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;root&#x27;;</span><br></pre></td></tr></table></figure>
 
-<p>123456为初始默认密码</p>
+<p>修改localhost密码</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;%&#x27; IDENTIFIED WITH mysql_native_password BY &#x27;root&#x27;;</span><br></pre></td></tr></table></figure>
+
 <h4 id="刷新权限"><a href="#刷新权限" class="headerlink" title="刷新权限"></a>刷新权限</h4><figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
 
 <blockquote class="blockquote-note blockquote-note__info"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16"><path fill-rule="evenodd" d="M6.3 5.69a.942.942 0 0 1-.28-.7c0-.28.09-.52.28-.7.19-.18.42-.28.7-.28.28 0 .52.09.7.28.18.19.28.42.28.7 0 .28-.09.52-.28.7a1 1 0 0 1-.7.3c-.28 0-.52-.11-.7-.3zM8 7.99c-.02-.25-.11-.48-.31-.69-.2-.19-.42-.3-.69-.31H6c-.27.02-.48.13-.69.31-.2.2-.3.44-.31.69h1v3c.02.27.11.5.31.69.2.2.42.31.69.31h1c.27 0 .48-.11.69-.31.2-.19.3-.42.31-.69H8V7.98v.01zM7 2.3c-3.14 0-5.7 2.54-5.7 5.68 0 3.14 2.56 5.7 5.7 5.7s5.7-2.55 5.7-5.7c0-3.15-2.56-5.69-5.7-5.69v.01zM7 .98c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.12-7-7 3.14-7 7-7z"></path></svg></div>远程或局域网访问</div><div class="blockquote-note__content"><p>以上步骤完成可在本地使用Mysql服务，只释放了localhost，如需远程或局域网访问，执行以下步骤</p>
@@ -275,7 +277,7 @@
         
     </div>
  
-    <div class="post-footer__meta"><p>updated at 2023-09-24 17:11</p></div> 
+    <div class="post-footer__meta"><p>updated at 2023-11-21 15:18</p></div> 
     <div class="post-entry__tags"><a href="/tags/Mysql/" class="post-tags__link button"># Mysql</a></div> 
 </article>
 
