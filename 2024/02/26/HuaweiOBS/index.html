@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/favicon.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+    
+    
+    
+
+
+    <!-- meta -->
+
+
+<title>SpringBoot接入华为云OBS | oGnoK</title>
+
+
+    <meta name="keywords" content="Java, Spring Boot, Huawei OBS">
+
+
+
+
+    <!-- OpenGraph -->
+ 
+    <meta name="description" content="项目数据直线增长，自建存储服务器存在诸多劣势，选择一个数据稳定、业务可靠的数据存储服务器 OBS基本概念桶&ensp;&ensp;&ensp;&ensp;桶OBS中存储对象的容器。桶中的所有对象都处于同一逻辑层级。每个桶都有自己的访问权限、所属区域等属性，可以在不同区域创建不同访问权限的桶，并配置更多高级属性来满足不同场景的存储诉求。 &ensp;&ensp;&ensp;&ensp;桶名必须是全局">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot接入华为云OBS">
+<meta property="og:url" content="http://lovelypanda.top/2024/02/26/HuaweiOBS/index.html">
+<meta property="og:site_name" content="oGnoK">
+<meta property="og:description" content="项目数据直线增长，自建存储服务器存在诸多劣势，选择一个数据稳定、业务可靠的数据存储服务器 OBS基本概念桶&ensp;&ensp;&ensp;&ensp;桶OBS中存储对象的容器。桶中的所有对象都处于同一逻辑层级。每个桶都有自己的访问权限、所属区域等属性，可以在不同区域创建不同访问权限的桶，并配置更多高级属性来满足不同场景的存储诉求。 &ensp;&ensp;&ensp;&ensp;桶名必须是全局">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-02-26T02:07:43.000Z">
+<meta property="article:modified_time" content="2024-02-28T03:11:46.802Z">
+<meta property="article:author" content="oGnoK">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="Spring Boot">
+<meta property="article:tag" content="Huawei OBS">
+<meta name="twitter:card" content="summary_large_image">
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="/css/highlight/default.css" media="none" >
+        
+            <link rel="stylesheet" id="hl-dark-theme" href="/css/highlight/dark.css" media="none">
+        
+    
+
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/style/dark.css">
+
+    
+<script src="/js/darkmode.js"></script>
+
+
+
+     
+
+    <!-- custom head -->
+
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+    <body>
+        <div id="app" tabindex="-1">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">oGnoK</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">Home</a>
+                
+                    <a href="/tags/" class="navbar-menu button">Tags</a>
+                
+                    <a href="/archives/" class="navbar-menu button">Archives</a>
+                
+                    <a href="/friends/" class="navbar-menu button">Links</a>
+                
+                    <a href="/page/" class="navbar-menu button">Page</a>
+                
+            </div>
+        
+        
+        
+    <a href="/search/" id="btn-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="32"><path d="M192 448c0-141.152 114.848-256 256-256s256 114.848 256 256-114.848 256-256 256-256-114.848-256-256z m710.624 409.376l-206.88-206.88A318.784 318.784 0 0 0 768 448c0-176.736-143.264-320-320-320S128 271.264 128 448s143.264 320 320 320a318.784 318.784 0 0 0 202.496-72.256l206.88 206.88 45.248-45.248z"></path></svg>
+    </a>
+
+
+        
+        
+    <a href="javaScript:void(0);" id="btn-toggle-dark">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </a>
+
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">Home</a>
+                
+                    <a href="/tags/" class="dropdown-menu button">Tags</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">Archives</a>
+                
+                    <a href="/friends/" class="dropdown-menu button">Links</a>
+                
+                    <a href="/page/" class="dropdown-menu button">Page</a>
+                
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        SpringBoot接入华为云OBS
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2024/02/" class="post-meta__date button">2024-02-26 10:07</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+    <aside class="post-side">
+        <div class="post-side__toc">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OBS%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text">OBS基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%B6"><span class="toc-text">桶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1"><span class="toc-text">对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%AF%86%E9%92%A5%EF%BC%88AK-SK%EF%BC%89"><span class="toc-text">访问密钥（AK&#x2F;SK）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E8%8A%82%E7%82%B9%EF%BC%88Endpoint%EF%BC%89%E5%92%8C%E8%AE%BF%E9%97%AE%E5%9F%9F%E5%90%8D"><span class="toc-text">终端节点（Endpoint）和访问域名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-text">开发环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%85%A5JDK%E4%BE%9D%E8%B5%96"><span class="toc-text">引入JDK依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%8A%E4%BC%A0%E4%B8%8E%E4%B8%8B%E8%BD%BD"><span class="toc-text">对象的上传与下载</span></a></li></ol></li></ol>
+        </div>
+    </aside>
+    <a class="btn-toc button" id="btn-toc" tabindex="0">
+        <svg viewBox="0 0 1024 1024" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
+            <path d="M128 256h64V192H128zM320 256h576V192H320zM128 544h64v-64H128zM320 544h576v-64H320zM128 832h64v-64H128zM320 832h576v-64H320z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <div class="toc-menus" id="toc-menus">
+        <div class="toc-title">Article Directory</div>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#OBS%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text">OBS基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A1%B6"><span class="toc-text">桶</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1"><span class="toc-text">对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BF%E9%97%AE%E5%AF%86%E9%92%A5%EF%BC%88AK-SK%EF%BC%89"><span class="toc-text">访问密钥（AK&#x2F;SK）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E8%8A%82%E7%82%B9%EF%BC%88Endpoint%EF%BC%89%E5%92%8C%E8%AE%BF%E9%97%AE%E5%9F%9F%E5%90%8D"><span class="toc-text">终端节点（Endpoint）和访问域名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-text">开发环境准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E5%85%A5JDK%E4%BE%9D%E8%B5%96"><span class="toc-text">引入JDK依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%8A%E4%BC%A0%E4%B8%8E%E4%B8%8B%E8%BD%BD"><span class="toc-text">对象的上传与下载</span></a></li></ol></li></ol>
+    </div>
+
+
+<article class="post post__with-toc content-card">
+    <div class="post__header">
+    <div class="post__expire" id="post-expired-notify">
+        <p>
+            This article was last updated on &lt;span id=&#34;expire-date&#34;&gt;&lt;/span&gt; days ago, the information described in the article may be outdated.
+        </p>
+    </div>
+    <script>
+        (() => {
+            var update = Date.parse("2024-02-28"),
+                date = new Date(),
+                now = date.getTime(),
+                expire = now - update,
+                expire_days = Math.floor(expire/(24*3600*1000));
+            if (expire_days >= 360) {
+                document.querySelectorAll('#expire-date')[0].innerHTML = expire_days;
+                document.querySelectorAll('#post-expired-notify')[0].style.display = 'block';
+            }
+        })();
+    </script>
+</div>
+    <div class="post__content">
+        <p>项目数据直线增长，自建存储服务器存在诸多劣势，选择一个数据稳定、业务可靠的数据存储服务器</p>
+<h2 id="OBS基本概念"><a href="#OBS基本概念" class="headerlink" title="OBS基本概念"></a>OBS基本概念</h2><h3 id="桶"><a href="#桶" class="headerlink" title="桶"></a>桶</h3><p>&ensp;&ensp;&ensp;&ensp;桶OBS中存储对象的容器。桶中的所有对象都处于同一逻辑层级。每个桶都有自己的访问权限、所属区域等属性，可以在不同区域创建不同访问权限的桶，并配置更多高级属性来满足不同场景的存储诉求。</p>
+<p>&ensp;&ensp;&ensp;&ensp;桶名必须是全局唯一的且不能修改，即用户创建的桶不能与自己已创建的 其他桶名称相同，也不能与其他用户创建的桶名称相同。桶所属的区域在创建后也不能修改。每个桶在创建时都会生成默认的桶ACL（Access Control List，访问控制列 表），桶ACL的每项包含了对被授权用户授予什么样的权限，如读取权限、写入权限 等。用户只有对桶有相应的权限，才可以对桶进行操作，如创建、删除、显示、设置 桶ACL等。</p>
+<h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3><p>&ensp;&ensp;&ensp;&ensp;对象是OBS中数据存储的基本单位，一个对象实际是一个文件的数据与其相关属性信息的集合体。用户上传至OBS的数据都以对象的形式保存在桶中。</p>
+<p>&ensp;&ensp;&ensp;&ensp;对象包括了Key，Metadata，Data三部分：</p>
+<p>​		&ensp;&ensp;&ensp;&ensp;● Key：键值，即对象的名称，一个桶里的每个对象必须拥有唯一的对象键值。 </p>
+<p>​				&ensp;&ensp;&ensp;&ensp;● Metadata：元数据，对象的描述信息，包括系统元数据和用户元数据，这些元数据以键值对（Key-Value）的形式被上传到OBS中，系统元数据由OBS</p>
+<p>​				&ensp;&ensp;&ensp;&ensp;● Data：数据，即文件的数据内容。</p>
+<h3 id="访问密钥（AK-SK）"><a href="#访问密钥（AK-SK）" class="headerlink" title="访问密钥（AK&#x2F;SK）"></a>访问密钥（AK&#x2F;SK）</h3><p>&ensp;&ensp;&ensp;&ensp;OBS支持通过AK&#x2F;SK认证方式进行认证鉴权，即使用Access Key ID（AK）&#x2F;Secret Access Key（SK）加密的方法来验证某个请求发送者身份。当您使用OBS提供的API进行二次开发并通过AK&#x2F;SK认证方式完成认证鉴权时，需要按照OBS定义的签名算法来计 算签名并s添加到请求中。</p>
+<p>​		 &ensp;&ensp;&ensp;&ensp;● Access Key Id（AK）：访问密ID。与私有访问密钥关联的唯一标识符；访问密钥ID和私有访问密钥一起使用，对请求进行加密签名。</p>
+<p>​		&ensp;&ensp;&ensp;&ensp; ● Secret Access Key（SK）：与访问密钥ID结合使用的私有访问密钥，对请求进行加密签名，可标识发送方，并防止请求被修改。</p>
+<h3 id="终端节点（Endpoint）和访问域名"><a href="#终端节点（Endpoint）和访问域名" class="headerlink" title="终端节点（Endpoint）和访问域名"></a>终端节点（Endpoint）和访问域名</h3><p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;终端节点（Endpoint）：OBS为每个区域提供一个终端节点，终端节点可以理解为OBS在不同区域的区域域名，用于处理各自区域的访问请求。</p>
+<p><em><strong>注：连接OBS时需要访问密钥（AK&#x2F;SK）以及终端节点（Endpoint）进行认证连接，可查看我提供的代码了解基本格式</strong></em></p>
+<h2 id="开发环境准备"><a href="#开发环境准备" class="headerlink" title="开发环境准备"></a>开发环境准备</h2><h3 id="引入JDK依赖"><a href="#引入JDK依赖" class="headerlink" title="引入JDK依赖"></a>引入JDK依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.huaweicloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>esdk-obs-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.22.12<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>因版本问题可能遇到的错误</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread <span class="string">&quot;main&quot;</span> java.lang.NoSuchMethodError: <span class="string">&#x27;okhttp3.RequestBody </span></span><br><span class="line"><span class="string">okhttp3.RequestBody.create(java.lang.String, okhttp3.MediaType)&#x27;</span></span><br><span class="line"> at com.obs.services.internal.RestConnectionService.createRequestBuilder(RestConnectionService.java:<span class="number">157</span>)</span><br><span class="line"> at com.obs.services.internal.RestConnectionService.setupConnection(RestConnectionService.java:<span class="number">148</span>)</span><br><span class="line"> at com.obs.services.internal.RestConnectionService.setupConnection(RestConnectionService.java:<span class="number">124</span>)</span><br><span class="line"> at com.obs.services.internal.RestStorageService.performRequest(RestStorageService.java:<span class="number">395</span>)</span><br><span class="line"> at com.obs.services.internal.RestStorageService.performRequest(RestStorageService.java:<span class="number">388</span>)</span><br></pre></td></tr></table></figure>
+
+<p>如果遇到 okhttp 报错问题，报错是因为升级SDK后okhttp使用了老版本的原因，尝试升级okhttp，版本按个人情况修改</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.squareup.okhttp3<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>okhttp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.9.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>注</div><div class="blockquote-note__content"><p>&ensp;&ensp;在我默认提供的esdk-obs-java与okhttp3版本使用是正常，如有版本引发的意外问题可交流讨论</p>
+</div></blockquote>
+
+<h3 id="对象的上传与下载"><a href="#对象的上传与下载" class="headerlink" title="对象的上传与下载"></a>对象的上传与下载</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo2dateobs;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.obs.services.ObsClient;</span><br><span class="line"><span class="keyword">import</span> com.obs.services.model.*;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DateObsController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(DateObsController.class);</span><br><span class="line">    </span><br><span class="line"><span class="comment">//定义OBS的endPoint、Access Key Id与 Secret Access Key用于进行远程OBS连接</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">endPoint</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">ak</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">sk</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//    流式上传</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上传文件--上传字符串（byte 数组）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/uploadByte&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">uploadFile</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ObsClient</span> <span class="variable">obsClient</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            obsClient = <span class="keyword">new</span> <span class="title class_">ObsClient</span>(ak, sk, endPoint);</span><br><span class="line">            <span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> <span class="string">&quot;Hello OBS&quot;</span>;</span><br><span class="line"></span><br><span class="line">            <span class="type">HeaderResponse</span> <span class="variable">response</span> <span class="operator">=</span> obsClient.putObject(<span class="string">&quot;bucketName&quot;</span>,<span class="string">&quot;objectKey&quot;</span>,<span class="keyword">new</span> <span class="title class_">ByteArrayInputStream</span>(content.getBytes()));</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 可选：调用成功后，记录调用成功的HTTP状态码和服务端请求ID</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">statusCode</span> <span class="operator">=</span> response.getStatusCode();</span><br><span class="line">            <span class="keyword">if</span> (<span class="number">200</span> == statusCode) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            obsClient.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;文件上传失败：&#123;&#125;&quot;</span>, e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//    流式上传</span></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上传文件--上传文件流</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/uploadFile&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">uploadFileByte</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ObsClient</span> <span class="variable">obsClient</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            obsClient = <span class="keyword">new</span> <span class="title class_">ObsClient</span>(ak, sk, endPoint);</span><br><span class="line">            <span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;File Path&quot;</span>);</span><br><span class="line">            <span class="type">FileInputStream</span> <span class="variable">fileStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(file);</span><br><span class="line">            <span class="type">HeaderResponse</span> <span class="variable">response</span> <span class="operator">=</span> obsClient.putObject(<span class="string">&quot;bucketName&quot;</span>,<span class="string">&quot;objectKey&quot;</span>,fileStream);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 可选：调用成功后，记录调用成功的HTTP状态码和服务端请求ID</span></span><br><span class="line">            <span class="type">int</span> <span class="variable">statusCode</span> <span class="operator">=</span> response.getStatusCode();</span><br><span class="line">            <span class="keyword">if</span> (<span class="number">200</span> == statusCode) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            obsClient.close();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;文件上传失败：&#123;&#125;&quot;</span>, e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 下载文件--流下载</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/downloadFile&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">downloadFile</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ObsClient</span> <span class="variable">obsClient</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">            obsClient = <span class="keyword">new</span> <span class="title class_">ObsClient</span>(ak, sk, endPoint);</span><br><span class="line">            <span class="type">ObsObject</span> <span class="variable">obsObject</span> <span class="operator">=</span> obsClient.getObject();</span><br><span class="line"></span><br><span class="line">            需要下载的桶名称以及对象名</span><br><span class="line">            <span class="type">String</span> <span class="variable">objectKey</span> <span class="operator">=</span> obsObject.getObjectKey(<span class="string">&quot;bucketName&quot;</span>,<span class="string">&quot;objectKey&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="type">String</span> <span class="variable">filePath</span> <span class="operator">=</span> <span class="string">&quot;Q:\\Files\\&quot;</span> + objectKey;</span><br><span class="line"></span><br><span class="line">            <span class="type">InputStream</span> <span class="variable">objectContent</span> <span class="operator">=</span> obsObject.getObjectContent();</span><br><span class="line">            <span class="type">byte</span>[] b = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">1024</span>];</span><br><span class="line">            <span class="type">OutputStream</span> <span class="variable">outputStream</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(filePath);</span><br><span class="line">            <span class="type">int</span> len;</span><br><span class="line">            <span class="keyword">while</span> ((len= objectContent.read(b)) != -<span class="number">1</span>)&#123;</span><br><span class="line">                outputStream.write(b, <span class="number">0</span>, len);</span><br><span class="line">            &#125;</span><br><span class="line">            outputStream.close();</span><br><span class="line">            obsClient.close();</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            logger.info(<span class="string">&quot;文件上传失败：&#123;&#125;&quot;</span>, e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取上传地址</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/getUploadUrl&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getUploadUrl</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ObsClient</span> <span class="variable">obsClient</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 创建ObsClient实例</span></span><br><span class="line">            obsClient = <span class="keyword">new</span> <span class="title class_">ObsClient</span>(ak, sk, endPoint);</span><br><span class="line">            <span class="comment">// URL有效期，3600秒</span></span><br><span class="line">            <span class="type">long</span> <span class="variable">expireSeconds</span> <span class="operator">=</span> <span class="number">3600L</span>;</span><br><span class="line">            Map&lt;String, String&gt; headers = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, String&gt;();</span><br><span class="line">            headers.put(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/octet-stream&quot;</span>);</span><br><span class="line">            <span class="type">TemporarySignatureRequest</span> <span class="variable">request</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemporarySignatureRequest</span>(HttpMethodEnum.PUT, expireSeconds);</span><br><span class="line">            request.setBucketName(<span class="string">&quot;bucketName&quot;</span>);</span><br><span class="line">            request.setObjectKey(<span class="string">&quot;objectKey&quot;</span>);</span><br><span class="line">            request.setHeaders(headers);</span><br><span class="line">            <span class="type">TemporarySignatureResponse</span> <span class="variable">response</span> <span class="operator">=</span> obsClient.createTemporarySignature(request);</span><br><span class="line">            System.out.println(response.getSignedUrl());</span><br><span class="line">            <span class="keyword">return</span> response.getSignedUrl();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            logger.error(<span class="string">&quot;获取上传地址异常：&#123;&#125;&quot;</span>, e.getMessage(), e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote class="blockquote-note blockquote-note__tip"><div class="blockquote-note__header"><div class="blockquote-note__icon"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="16" viewBox="0 0 12 16"><path fill-rule="evenodd" d="M6.5 0C3.48 0 1 2.19 1 5c0 .92.55 2.25 1 3 1.34 2.25 1.78 2.78 2 4v1h5v-1c.22-1.22.66-1.75 2-4 .45-.75 1-2.08 1-3 0-2.81-2.48-5-5.5-5zm3.64 7.48c-.25.44-.47.8-.67 1.11-.86 1.41-1.25 2.06-1.45 3.23-.02.05-.02.11-.02.17H5c0-.06 0-.13-.02-.17-.2-1.17-.59-1.83-1.45-3.23-.2-.31-.42-.67-.67-1.11C2.44 6.78 2 5.65 2 5c0-2.2 2.02-4 4.5-4 1.22 0 2.36.42 3.22 1.19C10.55 2.94 11 3.94 11 5c0 .66-.44 1.78-.86 2.48zM4 14h5c-.23 1.14-1.3 2-2.5 2s-2.27-.86-2.5-2z"></path></svg></div>Tip</div><div class="blockquote-note__content"><p>&ensp;&ensp;&ensp;&ensp;putObject(String bucketName, String objectKey, InputStream input)传递参数</p>
+<p><em><strong>代码依次为bucketName–桶名称，objectKey–上传&#x2F;下载时对象名，input上传内容</strong></em></p>
+</div></blockquote>
+
+<p>更多内容参加OBS的Java SDK</p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>Author: </strong>oGnok
+        </p>
+        <p>
+            <strong>
+                Permalink: 
+            </strong>
+            <a href="http://lovelypanda.top/2024/02/26/HuaweiOBS/">http://lovelypanda.top/2024/02/26/HuaweiOBS/</a>
+        </p>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>updated at 2024-02-28 11:11</p></div> 
+    <div class="post-entry__tags"><a href="/tags/Java/" class="post-tags__link button"># Java</a><a href="/tags/Spring-Boot/" class="post-tags__link button"># Spring Boot</a><a href="/tags/Huawei-OBS/" class="post-tags__link button"># Huawei OBS</a></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/2023/12/17/mybatis/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            持久化框架--Mybatis的xml中到底有什么？
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+     
+    <a href="#" class="button" id="b2t" aria-label="Back to Top" title="Back to Top">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32">
+            <path d="M233.376 722.752L278.624 768 512 534.624 745.376 768l45.248-45.248L512 444.128zM192 352h640V288H192z" fill="currentColor"></path>
+        </svg>
+    </a>
+
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2018&nbsp;-&nbsp;2024 <a href="/">oGnoK</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+
+    
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.css">
+
+    
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.4.1/dist/jquery.fancybox.min.js"></script>
+
+    <script>
+        let lazyloadT = Boolean('true'),
+            auto_fancybox = Boolean('false')
+        if (auto_fancybox) {
+            $(".post__content").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        } else {
+            $(".post__content").find("fancybox").find('img').each(function () {
+                var element = document.createElement("a");
+                $(element).attr("data-fancybox", "gallery");
+                $(element).attr("href", $(this).attr("src"));
+                if (lazyloadT) {
+                    $(element).attr("href", $(this).attr("data-srcset"));
+                }
+                $(this).wrap(element);
+            });
+        }
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
